@@ -1,4 +1,4 @@
-name : micro-service-user-dev
+name : microservices-dev
 
 services:
   # PostgreSQL para User Service
@@ -32,6 +32,8 @@ services:
     ports:
       - "9081:8081"
     environment:
+      - SPRING_APPLICATION_NAME=user-service
+      - SPRING_PROFILES_ACTIVE=dev
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user-dev:5432/userdb
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=postgres
