@@ -1,19 +1,19 @@
-name : micro-service-user
+name : micro-service-user-dev
 
 services:
   # PostgreSQL para User Service
-  postgres-user:
+  postgres-user-dev:
     image: postgres:15-alpine
-    container_name: postgres-user
+    container_name: postgres-user-dev
     environment:
       POSTGRES_DB: userdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_INITDB_ARGS: "--encoding=UTF8 --locale=en_US.UTF-8"
-    ports:
-      - "5432:5432"
+  #  ports:
+  #    - "5432:5432"
     volumes:
-      - postgres-user-data:/var/lib/postgresql/data
+      - postgres-user-dev-data:/var/lib/postgresql/data
     networks:
       - microservice-network
     healthcheck:
@@ -24,19 +24,19 @@ services:
     restart: unless-stopped
 
   #  User Service
-  user-service:
-    image: user-service:1.0
+  user-service-dev:
+    image: user-service-dev:1.0
     build:
       context: ./user-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "9081:8081"
     environment:
-      - SPRING_DATABASE_URL=jdbc:postgresql://localhost:5432/userdb
-      - SPRING_DATABASE_USERNAME=postgres
-      - SPRING_DATABASE_PASSWORD=postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-user-dev:5432/userdb
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=postgres
     depends_on:
-      postgres-user:
+      postgres-user-dev:
         condition: service_healthy
     networks:
       - microservice-network
@@ -46,5 +46,5 @@ networks:
   microservice-network:
     driver: bridge
 volumes:
-  postgres-user-data:
+  postgres-user-dev-data:
     driver: local
